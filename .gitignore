@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/*
+
+# Builds
+.next/
+out/
+dist/
+build/
+
+# Env
+.env
+.env.local
+.env*.local
+!.env.example
+!.env.local.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Data / scraped artifacts (never commit raw downloads)
+data/
+storage/
+*.pdf
+*.xml
+!**/fixtures/**/*.xml
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Vercel / Turbo
+.vercel/
+.turbo/

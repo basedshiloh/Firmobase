@@ -1,0 +1,47 @@
+# Local dev stack for the Python pipeline.
+# DB is Supabase (remote) — set DATABASE_URL in services/pipeline/.env.
+# Run: docker compose up --build
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: ./services/pipeline
+    env_file:
+      - ./services/pipeline/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/pipeline:/app
+
+  worker:
+    build: ./services/pipeline
+    command: celery -A app.celery_app worker --loglevel=info
+    env_file:
+      - ./services/pipeline/.env
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/pipeline:/app
+
+  beat:
+    build: ./services/pipeline
+    command: celery -A app.celery_app beat --loglevel=info
+    env_file:
+      - ./services/pipeline/.env
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/pipeline:/app

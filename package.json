@@ -1,0 +1,19 @@
+{
+  "name": "firmobase",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Firmobase — Polish company intelligence platform",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @firmobase/web",
+    "build": "npm run build --workspace @firmobase/web",
+    "lint": "npm run lint --workspace @firmobase/web",
+    "typecheck": "npm run typecheck --workspace @firmobase/web"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
