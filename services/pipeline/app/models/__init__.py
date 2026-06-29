@@ -16,14 +16,20 @@ from app.models.financials import (
     FinancialReport,
     StatementKind,
 )
+from app.models.grants import (
+    CompanyGrant,
+    Grant,
+)
 
 __all__ = [
     "Company",
     "CompanyAddress",
+    "CompanyGrant",
     "CompanyPkd",
     "CompanyRole",
     "FinancialLineItem",
     "FinancialReport",
+    "Grant",
     "IngestionRun",
     "Person",
     "PkdCode",

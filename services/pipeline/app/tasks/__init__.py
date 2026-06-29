@@ -82,3 +82,31 @@ def ingest_ekrs_batch(krs_list: list[str], registry: str = "P") -> dict:
         ingest_ekrs.delay(krs, registry)
     log.info("ingest_ekrs_batch.enqueued", count=len(krs_list), registry=registry)
     return {"enqueued": len(krs_list), "registry": registry}
+
+
+@celery_app.task(
+    name="app.tasks.ingest_grants_batch",
+    bind=True,
+    max_retries=2,
+    default_retry_delay=120,
+    acks_late=True,
+)
+def ingest_grants_batch(self, program: str) -> dict:
+    """Scrape and ingest all grants for a given program.
+
+    Each program adapter (PARP, NCBR, FENG, etc.) yields GrantRecords.
+    This task handles the full cycle: fetch → parse → upsert → match.
+    """
+    from app.db import SessionLocal
+    from app.ingest.grant_ingest import ingest_grants
+    from app.scrape.grant_scrapers import get_scraper
+
+    try:
+        scraper = get_scraper(program)
+        records = scraper.fetch_all()
+        with SessionLocal() as session:
+            stats = ingest_grants(session, records)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("ingest_grants.retry", program=program, error=repr(exc))
+        raise self.retry(exc=exc) from exc
+    return {"program": program, **stats}

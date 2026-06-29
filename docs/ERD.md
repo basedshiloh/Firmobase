@@ -1,16 +1,17 @@
-# Firmobase — Entity Relationship Diagram (Phase 1)
+# Firmobase — Entity Relationship Diagram
 
-The core company registry spine. Financials (Phase 3), grants (Phase 6) and
-graph edges (Phase 5) attach to these tables by internal UUID.
+Core company registry + financials + grants. All tables keyed by internal UUID.
 
 ```mermaid
 erDiagram
     companies ||--o{ company_addresses : has
     companies ||--o{ company_roles     : has
     companies ||--o{ company_pkd       : classified_by
+    companies ||--o{ company_grants    : received
     companies ||--o| persons           : "may map to (legal person)"
     persons   ||--o{ company_roles     : holds
     pkd_codes ||--o{ company_pkd       : referenced_by
+    grants    ||--o{ company_grants    : awarded_to
 
     companies {
         uuid id PK
@@ -74,6 +75,30 @@ erDiagram
         uuid company_id FK
         text pkd_code FK
         boolean is_primary
+    }
+
+    grants {
+        uuid id PK
+        text program
+        smallint program_year
+        text title
+        text description
+        text beneficiary_name
+        numeric amount_pln
+        numeric amount_eu
+        date start_date
+        date end_date
+        text status
+        text voivodeship
+        text source_id UK
+    }
+
+    company_grants {
+        uuid id PK
+        uuid company_id FK
+        uuid grant_id FK
+        text match_method
+        real match_score
     }
 
     ingestion_runs {

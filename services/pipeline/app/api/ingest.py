@@ -7,7 +7,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 
 from app.ingest import EkrsNotFound, Registry, ingest_krs
-from app.tasks import ingest_ekrs, scrape_financials
+from app.tasks import ingest_ekrs, ingest_grants_batch, scrape_financials
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
 
@@ -77,3 +77,14 @@ def trigger_financial_scrape(krs: str, company_id: str) -> dict:
         )
     task = scrape_financials.delay(krs, company_id)
     return {"mode": "async", "task_id": task.id, "krs": krs, "company_id": company_id}
+
+
+@router.post("/grants/{program}")
+def trigger_grant_ingest(program: str) -> dict:
+    """Scrape and ingest grants for a program (PARP, FENG, POIR, etc.).
+
+    Always asynchronous — fetches from external government sources.
+    """
+    program = program.upper()
+    task = ingest_grants_batch.delay(program)
+    return {"mode": "async", "task_id": task.id, "program": program}

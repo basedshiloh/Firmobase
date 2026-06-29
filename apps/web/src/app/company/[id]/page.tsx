@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { CompanyFinancials } from "@/components/company-financials";
 import { RelationshipGraph } from "@/components/relationship-graph";
+import { CompanyGrants } from "@/components/company-grants";
 import { getSupabase } from "@/lib/supabase";
 
 type Params = Promise<{ id: string }>;
@@ -195,6 +196,15 @@ export default async function CompanyPage({ params }: { params: Params }) {
               }
             >
               <CompanyFinancials companyId={id} />
+            </Suspense>
+
+            {/* Government grants */}
+            <Suspense
+              fallback={
+                <div className="h-32 animate-pulse rounded-lg border border-[var(--border)] bg-[var(--muted)]" />
+              }
+            >
+              <CompanyGrants companyId={id} />
             </Suspense>
 
             {/* Relationship graph */}
