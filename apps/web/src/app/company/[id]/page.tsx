@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { CompanyFinancials } from "@/components/company-financials";
+import { RelationshipGraph } from "@/components/relationship-graph";
 import { getSupabase } from "@/lib/supabase";
 
 type Params = Promise<{ id: string }>;
@@ -195,6 +196,9 @@ export default async function CompanyPage({ params }: { params: Params }) {
             >
               <CompanyFinancials companyId={id} />
             </Suspense>
+
+            {/* Relationship graph */}
+            <RelationshipGraph companyId={id} />
 
             {/* Management board */}
             {currentBoard.length > 0 && (
