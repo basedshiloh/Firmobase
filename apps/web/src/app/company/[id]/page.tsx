@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { CompanyFinancials } from "@/components/company-financials";
 import { RelationshipGraph } from "@/components/relationship-graph";
 import { CompanyGrants } from "@/components/company-grants";
+import { AiInsights } from "@/components/ai-insights";
 import { getSupabase } from "@/lib/supabase";
 
 type Params = Promise<{ id: string }>;
@@ -197,6 +198,9 @@ export default async function CompanyPage({ params }: { params: Params }) {
             >
               <CompanyFinancials companyId={id} />
             </Suspense>
+
+            {/* AI Insights */}
+            <AiInsights companyId={id} />
 
             {/* Government grants */}
             <Suspense
