@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { CompanyFinancials } from "@/components/company-financials";
@@ -119,7 +118,8 @@ async function fetchPkd(companyId: string) {
     .select("is_primary, pkd_code, pkd_codes(code, description, section)")
     .eq("company_id", companyId)
     .order("is_primary", { ascending: false });
-  return (data ?? []) as Pkd[];
+  // Supabase infers the joined relation as an array; it's a to-one at runtime.
+  return (data ?? []) as unknown as Pkd[];
 }
 
 export default async function CompanyPage({ params }: { params: Params }) {

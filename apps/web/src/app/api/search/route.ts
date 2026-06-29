@@ -18,7 +18,6 @@ export async function GET(req: NextRequest) {
   const status = params.get("status") ?? "";
   const voivodeship = params.get("voivodeship") ?? "";
   const legalForm = params.get("legal_form") ?? "";
-  const pkd = params.get("pkd") ?? "";
   const sortBy = params.get("sort") ?? "name";
   const sortDir = params.get("dir") === "desc" ? false : true;
 
