@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getSupabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
 const openrouter = process.env.OPENROUTER_API_KEY
   ? new OpenAI({
@@ -15,6 +16,14 @@ export async function GET(req: NextRequest) {
   const companyId = req.nextUrl.searchParams.get("companyId");
   if (!companyId) {
     return NextResponse.json({ error: "companyId required" }, { status: 400 });
+  }
+
+  const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "anonymous";
+  if (!rateLimit(`insights:${clientIp}`, 10)) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded — try again in a minute" },
+      { status: 429 },
+    );
   }
 
   if (!openrouter) {
