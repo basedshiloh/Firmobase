@@ -12,6 +12,7 @@ type Insights = {
 
 type InsightsResponse = {
   insights: Insights;
+  model?: string;
   generatedAt: string;
 };
 
@@ -86,16 +87,18 @@ export function AiInsights({ companyId }: { companyId: string }) {
         </p>
       )}
 
-      {data && expanded && <InsightsPanel insights={data.insights} generatedAt={data.generatedAt} />}
+      {data && expanded && <InsightsPanel insights={data.insights} model={data.model} generatedAt={data.generatedAt} />}
     </div>
   );
 }
 
 function InsightsPanel({
   insights,
+  model,
   generatedAt,
 }: {
   insights: Insights;
+  model?: string;
   generatedAt: string;
 }) {
   return (
@@ -166,7 +169,7 @@ function InsightsPanel({
       )}
 
       <div className="flex items-center justify-between text-[10px] opacity-25">
-        <span>Powered by Claude · Not financial advice</span>
+        <span>Powered by {model ?? "AI"} via OpenRouter · Not financial advice</span>
         <span>Generated {new Date(generatedAt).toLocaleString()}</span>
       </div>
     </div>

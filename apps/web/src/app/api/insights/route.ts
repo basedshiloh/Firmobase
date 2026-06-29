@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { getSupabase } from "@/lib/supabase";
 
-const anthropic = process.env.ANTHROPIC_API_KEY
-  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const openrouter = process.env.OPENROUTER_API_KEY
+  ? new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
+    })
   : null;
+
+const AI_MODEL = process.env.OPENROUTER_MODEL ?? "anthropic/claude-sonnet-4";
 
 export async function GET(req: NextRequest) {
   const companyId = req.nextUrl.searchParams.get("companyId");
@@ -12,7 +17,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "companyId required" }, { status: 400 });
   }
 
-  if (!anthropic) {
+  if (!openrouter) {
     return NextResponse.json(
       { error: "AI insights unavailable — API key not configured" },
       { status: 503 },
@@ -24,7 +29,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "DB unavailable" }, { status: 503 });
   }
 
-  // Gather all company data in parallel
   const [companyRes, rolesRes, reportsRes, grantsRes] = await Promise.all([
     sb.from("companies").select("*").eq("id", companyId).single(),
     sb
@@ -59,13 +63,18 @@ export async function GET(req: NextRequest) {
   const dataContext = buildContext(company, roles, reports, grants);
 
   try {
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+    const completion = await openrouter.chat.completions.create({
+      model: AI_MODEL,
       max_tokens: 1200,
       messages: [
         {
+          role: "system",
+          content:
+            "You are Firmobase AI, an analyst for Polish companies. You produce structured JSON intelligence reports.",
+        },
+        {
           role: "user",
-          content: `You are Firmobase AI, an analyst for Polish companies. Based on the data below, provide a concise intelligence report.
+          content: `Based on the data below, provide a concise intelligence report.
 
 DATA:
 ${dataContext}
@@ -82,8 +91,7 @@ Respond with EXACTLY this JSON structure (no markdown, no code fences):
       ],
     });
 
-    const text =
-      message.content[0].type === "text" ? message.content[0].text : "";
+    const text = completion.choices?.[0]?.message?.content ?? "";
 
     let parsed;
     try {
@@ -102,6 +110,7 @@ Respond with EXACTLY this JSON structure (no markdown, no code fences):
 
     return NextResponse.json({
       insights: parsed,
+      model: AI_MODEL,
       generatedAt: new Date().toISOString(),
     });
   } catch (e) {
