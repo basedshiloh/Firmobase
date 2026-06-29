@@ -5,7 +5,6 @@ import { Navbar } from "@/components/navbar";
 import { CompanyFinancials } from "@/components/company-financials";
 import { RelationshipGraph } from "@/components/relationship-graph";
 import { CompanyGrants } from "@/components/company-grants";
-import { AiInsights } from "@/components/ai-insights";
 import { WatchlistButton } from "@/components/watchlist-button";
 import { getSupabase } from "@/lib/supabase";
 
@@ -200,9 +199,6 @@ export default async function CompanyPage({ params }: { params: Params }) {
             >
               <CompanyFinancials companyId={id} />
             </Suspense>
-
-            {/* AI Insights */}
-            <AiInsights companyId={id} />
 
             {/* Government grants */}
             <Suspense

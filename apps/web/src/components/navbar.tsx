@@ -13,9 +13,6 @@ export function Navbar() {
             <Link href="/search" className="opacity-60 hover:opacity-100">
               Search
             </Link>
-            <Link href="/pricing" className="opacity-60 hover:opacity-100">
-              Pricing
-            </Link>
             <SignedIn>
               <Link href="/dashboard" className="opacity-60 hover:opacity-100">
                 Dashboard

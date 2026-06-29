@@ -1,5 +1,12 @@
--- Phase 8: Subscriptions and billing
--- Tracks Stripe customer/subscription state per Clerk user
+-- Phase 7: User billing (Clerk + Stripe) and watchlist
+--
+-- RLS model: Clerk JWT per-user. The browser reads/writes via supabase-js with a
+-- Clerk-issued JWT whose `sub` claim is the Clerk user id. Policies scope every
+-- row to its owner. Stripe webhooks write `subscriptions` with the service role
+-- (which bypasses RLS), so there is intentionally no client write policy there.
+--
+-- auth.jwt()->>'sub' is wrapped in a scalar subquery so the planner evaluates it
+-- once per statement (initplan) instead of once per row.
 
 create table if not exists subscriptions (
   id              uuid primary key default gen_random_uuid(),
@@ -32,12 +39,23 @@ create trigger set_subscriptions_updated_at
   before update on subscriptions
   for each row execute function set_updated_at();
 
--- RLS
 alter table subscriptions enable row level security;
 alter table watchlist enable row level security;
 
--- Subscriptions: users can only read their own
-create policy "own_read" on subscriptions for select using (true);
+-- subscriptions: owner may read its own row; writes are service-role only.
+create policy "own_read" on subscriptions
+  for select
+  using ((select auth.jwt() ->> 'sub') = clerk_user_id);
 
--- Watchlist: public read for now (gated by Clerk auth in the app)
-create policy "public_read" on watchlist for select using (true);
+-- watchlist: owner may read, add, and remove its own entries.
+create policy "own_read" on watchlist
+  for select
+  using ((select auth.jwt() ->> 'sub') = clerk_user_id);
+
+create policy "own_insert" on watchlist
+  for insert
+  with check ((select auth.jwt() ->> 'sub') = clerk_user_id);
+
+create policy "own_delete" on watchlist
+  for delete
+  using ((select auth.jwt() ->> 'sub') = clerk_user_id);

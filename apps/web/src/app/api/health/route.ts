@@ -5,8 +5,6 @@ export async function GET() {
   const checks: Record<string, "ok" | "error"> = {
     app: "ok",
     supabase: "error",
-    ai: process.env.OPENROUTER_API_KEY ? "ok" : "error",
-    stripe: process.env.STRIPE_SECRET_KEY ? "ok" : "error",
   };
 
   const sb = getSupabase();
