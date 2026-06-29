@@ -1,5 +1,7 @@
 import { getSupabase } from "@/lib/supabase";
 import { FinancialChart, type FinancialChartPoint } from "./financial-chart";
+import { FinancialAnalysis } from "./financial-analysis";
+import type { ReportFigures } from "@/lib/analytics";
 
 type Report = {
   id: string;
@@ -160,6 +162,9 @@ export async function CompanyFinancials({ companyId }: { companyId: string }) {
           </div>
         )}
       </div>
+
+      {/* Analysis — ratios + indicative scores */}
+      <FinancialAnalysis reports={reports as ReportFigures[]} />
 
       {/* Detailed statements */}
       {Object.entries(byStatement).map(([statement, items]) => (
