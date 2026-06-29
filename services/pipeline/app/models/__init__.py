@@ -11,15 +11,23 @@ from app.models.core import (
     PkdCode,
     RoleCategory,
 )
+from app.models.financials import (
+    FinancialLineItem,
+    FinancialReport,
+    StatementKind,
+)
 
 __all__ = [
     "Company",
     "CompanyAddress",
     "CompanyPkd",
     "CompanyRole",
+    "FinancialLineItem",
+    "FinancialReport",
     "IngestionRun",
     "Person",
     "PkdCode",
     "PersonType",
     "RoleCategory",
+    "StatementKind",
 ]

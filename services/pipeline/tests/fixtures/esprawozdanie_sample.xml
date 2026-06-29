@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SprawozdanieFinansowe xmlns="http://www.mf.gov.pl/schematy/SF/DefinicjeTypySprawozdaniaFinansowe/2018/07/09/SprawozdanieFinansowe">
+  <Naglowek>
+    <DataOd>2022-01-01</DataOd>
+    <DataDo>2022-12-31</DataDo>
+  </Naglowek>
+
+  <Bilans>
+    <Aktywa>
+      <Pozycja>
+        <OpisPozycji>Aktywa trwałe</OpisPozycji>
+        <KwotaA>500000000.00</KwotaA>
+        <KwotaB>460000000.00</KwotaB>
+        <Pozycja>
+          <OpisPozycji>Wartości niematerialne i prawne</OpisPozycji>
+          <KwotaA>120000000.00</KwotaA>
+          <KwotaB>110000000.00</KwotaB>
+        </Pozycja>
+        <Pozycja>
+          <OpisPozycji>Rzeczowe aktywa trwałe</OpisPozycji>
+          <KwotaA>80000000.00</KwotaA>
+          <KwotaB>75000000.00</KwotaB>
+        </Pozycja>
+      </Pozycja>
+      <Pozycja>
+        <OpisPozycji>Aktywa obrotowe</OpisPozycji>
+        <KwotaA>700000000.00</KwotaA>
+        <KwotaB>640000000.00</KwotaB>
+        <Pozycja>
+          <OpisPozycji>Środki pieniężne i inne aktywa pieniężne</OpisPozycji>
+          <KwotaA>350000000.00</KwotaA>
+          <KwotaB>300000000.00</KwotaB>
+        </Pozycja>
+      </Pozycja>
+      <Pozycja>
+        <OpisPozycji>Aktywa razem</OpisPozycji>
+        <KwotaA>1200000000.00</KwotaA>
+        <KwotaB>1100000000.00</KwotaB>
+      </Pozycja>
+    </Aktywa>
+    <Pasywa>
+      <Pozycja>
+        <OpisPozycji>Kapitał (fundusz) własny</OpisPozycji>
+        <KwotaA>900000000.00</KwotaA>
+        <KwotaB>820000000.00</KwotaB>
+      </Pozycja>
+      <Pozycja>
+        <OpisPozycji>Zobowiązania i rezerwy na zobowiązania</OpisPozycji>
+        <KwotaA>300000000.00</KwotaA>
+        <KwotaB>280000000.00</KwotaB>
+      </Pozycja>
+    </Pasywa>
+  </Bilans>
+
+  <RachunekZyskowIStrat>
+    <Pozycja>
+      <OpisPozycji>Przychody netto ze sprzedaży produktów, towarów i materiałów</OpisPozycji>
+      <KwotaA>950000000.00</KwotaA>
+      <KwotaB>880000000.00</KwotaB>
+    </Pozycja>
+    <Pozycja>
+      <OpisPozycji>Zysk (strata) z działalności operacyjnej</OpisPozycji>
+      <KwotaA>320000000.00</KwotaA>
+      <KwotaB>290000000.00</KwotaB>
+    </Pozycja>
+    <Pozycja>
+      <OpisPozycji>Zysk (strata) netto</OpisPozycji>
+      <KwotaA>280000000.00</KwotaA>
+      <KwotaB>250000000.00</KwotaB>
+    </Pozycja>
+  </RachunekZyskowIStrat>
+</SprawozdanieFinansowe>

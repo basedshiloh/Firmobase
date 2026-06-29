@@ -39,6 +39,36 @@ def ingest_ekrs(self, krs: str, registry: str = "P") -> dict:
     }
 
 
+@celery_app.task(
+    name="app.tasks.scrape_financials",
+    bind=True,
+    max_retries=2,
+    default_retry_delay=300,
+    acks_late=True,
+)
+def scrape_financials(self, krs: str, company_id: str) -> dict:
+    """Scrape, store, parse and persist all financial statements for a company.
+
+    Heavy task (drives a headless browser); retries are spaced widely so we do
+    not hammer the ministry's RDF on transient failures.
+    """
+    # Imported lazily so the worker only pulls Playwright when this task runs.
+    from app.ingest.financial_pipeline import scrape_company_financials
+
+    try:
+        result = scrape_company_financials(krs, company_id)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("scrape_financials.retry", krs=krs, error=repr(exc))
+        raise self.retry(exc=exc) from exc
+    return {
+        "krs": result.krs,
+        "company_id": result.company_id,
+        "documents_found": result.documents_found,
+        "statements_parsed": result.statements_parsed,
+        "statements_stored_only": result.statements_stored_only,
+    }
+
+
 @celery_app.task(name="app.tasks.ingest_ekrs_batch")
 def ingest_ekrs_batch(krs_list: list[str], registry: str = "P") -> dict:
     """Fan a list of KRS numbers out to individual ingest tasks.

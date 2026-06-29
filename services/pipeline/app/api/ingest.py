@@ -7,7 +7,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 
 from app.ingest import EkrsNotFound, Registry, ingest_krs
-from app.tasks import ingest_ekrs
+from app.tasks import ingest_ekrs, scrape_financials
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
 
@@ -60,3 +60,20 @@ def trigger_ekrs_ingest(
 
     task = ingest_ekrs.delay(krs, registry.value)
     return {"mode": "async", "task_id": task.id, "krs": krs}
+
+
+@router.post("/financials/{krs}")
+def trigger_financial_scrape(krs: str, company_id: str) -> dict:
+    """Scrape, parse and persist financial statements for a company from the RDF.
+
+    Always asynchronous: this drives a headless browser and can take a while.
+    `company_id` is the Firmobase internal id (the scrape attaches statements to
+    that company).
+    """
+    if not krs.isdigit() or len(krs) != 10:
+        raise HTTPException(
+            status_code=422,
+            detail="KRS must be a 10-digit number (leading zeros preserved)",
+        )
+    task = scrape_financials.delay(krs, company_id)
+    return {"mode": "async", "task_id": task.id, "krs": krs, "company_id": company_id}

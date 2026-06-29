@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
+import { CompanyFinancials } from "@/components/company-financials";
 import { getSupabase } from "@/lib/supabase";
 
 type Params = Promise<{ id: string }>;
@@ -184,6 +186,15 @@ export default async function CompanyPage({ params }: { params: Params }) {
                 />
               </dl>
             </Card>
+
+            {/* Financials */}
+            <Suspense
+              fallback={
+                <div className="h-48 animate-pulse rounded-lg border border-[var(--border)] bg-[var(--muted)]" />
+              }
+            >
+              <CompanyFinancials companyId={id} />
+            </Suspense>
 
             {/* Management board */}
             {currentBoard.length > 0 && (
