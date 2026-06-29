@@ -6,6 +6,7 @@ import { CompanyFinancials } from "@/components/company-financials";
 import { RelationshipGraph } from "@/components/relationship-graph";
 import { CompanyGrants } from "@/components/company-grants";
 import { AiInsights } from "@/components/ai-insights";
+import { WatchlistButton } from "@/components/watchlist-button";
 import { getSupabase } from "@/lib/supabase";
 
 type Params = Promise<{ id: string }>;
@@ -165,6 +166,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
               {company.status && <StatusBadge status={company.status} />}
             </div>
           </div>
+          <WatchlistButton companyId={id} />
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
